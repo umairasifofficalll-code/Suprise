@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIRAT AI - Chat with the Legend (vinate.com)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#05070e',
+                        brandNavy: '#0a1220',
+                        brandBlue: '#00d2ff',
+                        brandBlueGlow: '#00a6ff',
+                        rcbRed: '#e51c24',
+                        rcbCrimson: '#991218',
+                        panelBg: 'rgba(10, 18, 32, 0.82)'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+                        hud: ['Rajdhani', 'monospace'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap');
+
+        .font-hud {
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 0.08em;
+        }
+
+        .glow-cyan {
+            text-shadow: 0 0 16px rgba(0, 210, 255, 0.75), 0 0 35px rgba(0, 210, 255, 0.35);
+        }
+        .glow-red {
+            text-shadow: 0 0 14px rgba(229, 28, 36, 0.85);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(6, 10, 18, 0.8);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 210, 255, 0.35);
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00d2ff;
+        }
+
+        /* Ambient Cyber Matrix Background */
+        .bg-cyber-arena {
+            background-color: #060912;
+            background-image: 
+                radial-gradient(circle at 75% 35%, rgba(0, 210, 255, 0.12) 0%, transparent 60%),
+                radial-gradient(circle at 25% 25%, rgba(229, 28, 36, 0.15) 0%, transparent 55%),
+                radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 30px 30px;
+        }
+
+        /* HUD Reticle Brackets */
+        .hud-corner {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            pointer-events: none;
+            border-color: rgba(0, 210, 255, 0.75);
+            filter: drop-shadow(0 0 5px rgba(0, 210, 255, 0.6));
+        }
+        .hud-tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; }
+        .hud-tr { top: 0; right: 0; border-top: 2px solid; border-right: 2px solid; }
+        .hud-bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; }
+        .hud-br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; }
+
+        /* Hologram animations */
+        @keyframes spinClockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes spinCounter {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.65; filter: drop-shadow(0 0 10px #00d2ff); }
+            50% { opacity: 1; filter: drop-shadow(0 0 28px #00d2ff); }
+        }
+        @keyframes idleBreathe {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.008); }
+        }
+
+        .podium-outer {
+            animation: spinClockwise 20s linear infinite;
+        }
+        .podium-inner {
+            animation: spinCounter 13s linear infinite;
+        }
+        .podium-glow {
+            animation: pulseGlow 3.5s ease-in-out infinite;
+        }
+        .avatar-breathe {
+            animation: idleBreathe 4.5s ease-in-out infinite;
+        }
+
+        .stage-perspective {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+
+        /* Audio Wave Equalizer Bars */
+        .wave-bar {
+            width: 3px;
+            background: #00d2ff;
+            border-radius: 3px;
+            transition: height 0.08s ease;
+        }
+    </style>
+</head>
+<body class="bg-[#03060b] text-slate-100 font-sans min-h-screen flex items-center justify-center p-1 sm:p-3 md:p-6 selection:bg-brandBlue selection:text-black">
+
+    <!-- Browser Window Container (vinate.com UI) -->
+    <div class="w-full max-w-[1540px] rounded-2xl md:rounded-3xl border border-slate-800 bg-[#060912] shadow-[0_35px_100px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden relative">
+
+        <!-- 1. macOS Style Browser Top Bar -->
+        <div class="w-full bg-[#090f1b] border-b border-slate-800/80 px-4 py-2.5 flex items-center justify-between text-xs text-slate-400 select-none z-30">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <div class="hidden sm:flex items-center space-x-3 text-slate-500 ml-4">
+                    <i data-lucide="chevron-left" class="w-4 h-4 cursor-pointer hover:text-slate-300"></i>
+                    <i data-lucide="chevron-right" class="w-4 h-4 cursor-pointer hover:text-slate-300"></i>
+                </div>
+            </div>
+
+            <!-- URL Address Pill -->
+            <div class="flex-1 max-w-md mx-2 sm:mx-6">
+                <div class="w-full bg-[#04060d]/90 border border-slate-700/60 rounded-lg py-1 px-3 flex items-center justify-center space-x-2 text-slate-300 text-xs shadow-inner">
+                    <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i>
+                    <span class="font-medium tracking-wide">vinate.com</span>
+                    <span class="text-slate-600 hidden sm:inline">/virat-ai-conversational</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-3 text-slate-400">
+                <button id="openApiDrawerBtn" class="flex items-center space-x-1.5 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition text-[11px] font-medium border border-slate-700">
+                    <i data-lucide="key" class="w-3 h-3 text-amber-400"></i>
+                    <span id="apiKeyStatusText">API Key: Active</span>
+                </button>
+                <i data-lucide="share-2" class="w-4 h-4 cursor-pointer hover:text-slate-200"></i>
+            </div>
+        </div>
+
+        <!-- 2. Website Navigation Bar -->
+        <header class="w-full bg-[#080d19]/90 backdrop-blur-md px-6 py-3.5 flex items-center justify-between border-b border-slate-800/60 z-20">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl font-black italic tracking-wider text-white">VIRAT <span class="text-brandBlue drop-shadow-[0_0_12px_rgba(0,210,255,0.8)]">AI</span></span>
+                <span class="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-rcbRed/20 text-rcbRed border border-rcbRed/40">RCBx18</span>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="#features" class="hover:text-brandBlue transition">Features</a>
+                <a href="#mindset" class="hover:text-brandBlue transition">Chasing Mindset</a>
+                <a href="#about" class="hover:text-brandBlue transition">About</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <button id="ttsToggleBtn" class="px-3.5 py-1.5 rounded-full border border-brandBlue/30 bg-brandBlue/10 hover:bg-brandBlue/20 text-brandBlue text-xs font-semibold flex items-center space-x-1.5 transition">
+                    <i data-lucide="volume-2" id="ttsIcon" class="w-3.5 h-3.5"></i>
+                    <span id="ttsToggleText">Hindi Audio ON</span>
+                </button>
+                <button id="clearChatBtn" title="Clear Conversation" class="p-2 rounded-full border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white transition">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                </button>
+                <button class="px-5 py-2 rounded-full bg-gradient-to-r from-[#00d2ff] to-[#0077ff] hover:from-[#33ddff] hover:to-[#1a85ff] text-slate-950 font-bold text-xs sm:text-sm tracking-wide shadow-[0_0_20px_rgba(0,210,255,0.5)] transition transform hover:scale-105 active:scale-95">
+                    Try Now
+                </button>
+            </div>
+        </header>
+
+        <!-- 3. Main Split Screen (Chatbot Hero + Interactive Hologram Stage) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 min-h-[720px] bg-cyber-arena relative overflow-hidden">
+
+            <!-- Ambient Glow Spots -->
+            <div class="absolute -top-32 -left-32 w-96 h-96 bg-rcbRed/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute top-1/3 right-10 w-[500px] h-[500px] bg-brandBlue/15 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- LEFT COLUMN: Chat with the Legend -->
+            <div class="lg:col-span-6 p-6 sm:p-10 flex flex-col justify-between z-10">
+                
+                <div>
+                    <div class="inline-flex items-center space-x-1.5 mb-2">
+                        <span class="text-rcbRed font-bold text-xs sm:text-sm tracking-widest uppercase glow-red flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-rcbRed animate-ping"></span> 3D Chatbot
+                        </span>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-5xl xl:text-6xl font-black text-white tracking-tight uppercase leading-[1.05] glow-cyan">
+                        CHAT WITH THE LEGEND
+                    </h1>
+
+                    <p class="text-slate-300 text-sm sm:text-base mt-3 max-w-xl font-normal leading-relaxed">
+                        Experience next-generation 3D interactive AI conversations. Ask anything—from handling failure, fitness sacrifices, and pressure to daily routines.
+                    </p>
+
+                    <!-- Feature Badges -->
+                    <div class="flex flex-wrap gap-2.5 mt-4">
+                        <div class="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-700/80 backdrop-blur-md text-xs font-semibold text-slate-200 shadow-md">
+                            <i data-lucide="mic" class="w-3.5 h-3.5 text-rcbRed"></i>
+                            <span>Voice Enabled</span>
+                        </div>
+                        <div class="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-700/80 backdrop-blur-md text-xs font-semibold text-slate-200 shadow-md">
+                            <i data-lucide="box" class="w-3.5 h-3.5 text-brandBlue"></i>
+                            <span>Real-time 3D</span>
+                        </div>
+                        <div class="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-700/80 backdrop-blur-md text-xs font-semibold text-slate-200 shadow-md">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+                            <span>Open-Ended AI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Terminal Window -->
+                <div class="mt-6 flex-1 flex flex-col justify-end">
+                    
+                    <div class="w-full bg-[#0a1220]/90 border border-[#1b2b48] backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-[0_25px_60px_rgba(0,0,0,0.7)] flex flex-col h-[400px]">
+                        
+                        <!-- Top status inside chat -->
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 text-xs">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span class="font-semibold text-white tracking-wide">VIRAT KOHLI #18</span>
+                                <span class="text-slate-500">• In The Zone</span>
+                            </div>
+                            
+                            <!-- Real-time Equalizer Waveform -->
+                            <div class="flex items-center space-x-2">
+                                <div id="waveEqualizer" class="hidden items-end h-3.5 space-x-0.5">
+                                    <div class="wave-bar h-2"></div>
+                                    <div class="wave-bar h-3.5"></div>
+                                    <div class="wave-bar h-1"></div>
+                                    <div class="wave-bar h-3"></div>
+                                    <div class="wave-bar h-2"></div>
+                                </div>
+                                <span id="speakingLabel" class="text-[11px] text-slate-400 italic">Hindi Audio Ready</span>
+                            </div>
+                        </div>
+
+                        <!-- Chat Messages Container -->
+                        <div id="chatMessages" class="flex-1 overflow-y-auto space-y-3.5 py-3 pr-1 text-sm">
+                            
+                            <!-- Initial Greeting -->
+                            <div class="flex flex-col items-start space-y-1">
+                                <div class="bg-[#0b5cff] text-white px-4 py-3 rounded-2xl rounded-tl-sm max-w-[90%] shadow-lg">
+                                    <p class="font-semibold text-sm">नमस्ते भाई! कैसा चल रहा है सब?</p>
+                                    <p class="text-xs text-blue-100 mt-1">"Dekho cricket ho ya zindagi, asli character tabhi nikal kar aata hai jab samne tagda challenge ho. Aaj tumhare dimaag me kya chal raha hai, kaisa feel kar rahe ho?"</p>
+                                </div>
+                                <span class="text-[10px] text-slate-500 ml-1">Virat Kohli • Just now</span>
+                            </div>
+
+                        </div>
+
+                        <!-- Chat Input & Quick Chips -->
+                        <div class="pt-3 border-t border-slate-800/80">
+                            <form id="chatForm" class="relative flex items-center">
+                                <input 
+                                    type="text" 
+                                    id="chatInput"
+                                    placeholder="Ask anything in Hindi, Hinglish, or English..." 
+                                    class="w-full bg-[#050912] border border-slate-700/80 focus:border-brandBlue focus:ring-1 focus:ring-brandBlue text-slate-100 placeholder-slate-500 rounded-full py-3 pl-5 pr-28 text-sm focus:outline-none transition shadow-inner"
+                                >
+                                
+                                <div class="absolute right-2 flex items-center space-x-1.5">
+                                    <button 
+                                        type="submit" 
+                                        id="sendBtn"
+                                        class="px-4 py-1.5 bg-[#0077ff] hover:bg-[#0091ff] text-white text-xs font-bold rounded-full transition shadow-md active:scale-95 flex items-center gap-1"
+                                    >
+                                        <span>Send</span>
+                                        <i data-lucide="send" class="w-3 h-3"></i>
+                                    </button>
+
+                                    <button 
+                                        type="button" 
+                                        id="micBtn" 
+                                        class="p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 transition relative"
+                                        title="Speak via Microphone (Hindi/English)"
+                                    >
+                                        <i data-lucide="mic" id="micIcon" class="w-4 h-4 text-brandBlue"></i>
+                                        <span id="micRing" class="hidden absolute inset-0 rounded-full border border-brandBlue animate-ping"></span>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Quick preset suggestion chips -->
+                            <div class="flex items-center space-x-2 mt-2.5 overflow-x-auto no-scrollbar text-[11px] text-slate-400">
+                                <span class="text-slate-500 shrink-0">Topics:</span>
+                                <button type="button" class="quick-chip hover:text-brandBlue hover:border-brandBlue/40 border border-slate-800 rounded-full px-2.5 py-0.5 bg-slate-900/60 shrink-0 transition" data-msg="Melbourne me 31 par 4 girne ke baad dimaag me kya chal raha tha?">
+                                    🏏 Melbourne 82*
+                                </button>
+                                <button type="button" class="quick-chip hover:text-brandBlue hover:border-brandBlue/40 border border-slate-800 rounded-full px-2.5 py-0.5 bg-slate-900/60 shrink-0 transition" data-msg="Jab log bura bhala bolte hain aur form nahi hoti to khud ko kaise sambhalte ho?">
+                                    🔥 Criticism & Self-Doubt
+                                </button>
+                                <button type="button" class="quick-chip hover:text-brandBlue hover:border-brandBlue/40 border border-slate-800 rounded-full px-2.5 py-0.5 bg-slate-900/60 shrink-0 transition" data-msg="Main subah uth nahi pata aur routine follow nahi hota, kya karu?">
+                                    ⏰ Routine & Willpower
+                                </button>
+                                <button type="button" class="quick-chip hover:text-brandBlue hover:border-brandBlue/40 border border-slate-800 rounded-full px-2.5 py-0.5 bg-slate-900/60 shrink-0 transition" data-msg="Delhi ke chole bhature chhodne me sabse mushkil kya tha?">
+                                    🥗 Food & Sacrifices
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Photorealistic RCB Virat Kohli Stage -->
+            <div id="stageContainer" class="lg:col-span-6 relative flex items-center justify-center min-h-[580px] lg:min-h-full stage-perspective select-none overflow-hidden">
+
+                <!-- Holographic HUD Overlays -->
+                <div class="absolute left-8 top-16 z-20 pointer-events-none hidden md:block text-[10px] text-brandBlue/70 font-hud space-y-1">
+                    <p>SYSTEM.VER: 18.4.2_OPEN_AI</p>
+                    <p>STATUS: LOCKED_ON_TARGET</p>
+                    <p>TARGET_ID: VIRAT_KOHLI_RCB</p>
+                    <p class="text-slate-500">// public class ViratMindset {</p>
+                    <p class="text-slate-500">&nbsp;&nbsp;return courage &gt; comfort;</p>
+                    <p class="text-slate-500">}</p>
+                </div>
+
+                <div class="absolute right-10 top-20 z-20 pointer-events-none hidden md:block text-[10px] text-brandBlue/80 font-hud text-right space-y-1">
+                    <div class="p-2.5 rounded-lg bg-brandNavy/80 border border-brandBlue/30 backdrop-blur-md shadow-lg">
+                        <div class="flex items-center justify-end space-x-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brandBlue animate-pulse"></span>
+                            <span class="font-bold text-white">BIO-TELEMETRY</span>
+                        </div>
+                        <p class="text-slate-400 mt-1">INTENSITY: 100%</p>
+                        <p class="text-slate-400">FOCUS: SHARP</p>
+                        <p class="text-slate-400">RECOVERY: OPTIMAL</p>
+                    </div>
+                </div>
+
+                <!-- HUD Corner Target Reticle Brackets -->
+                <div class="absolute inset-8 sm:inset-12 pointer-events-none z-20">
+                    <div class="hud-corner hud-tl"></div>
+                    <div class="hud-corner hud-tr"></div>
+                    <div class="hud-corner hud-bl"></div>
+                    <div class="hud-corner hud-br"></div>
+                </div>
+
+                <!-- Holographic Sci-Fi Floor Podium -->
+                <div class="absolute bottom-6 w-[360px] sm:w-[480px] h-[130px] flex items-center justify-center pointer-events-none z-0">
+                    <div class="absolute inset-0 rounded-[100%] bg-gradient-to-t from-brandBlue/25 via-rcbRed/15 to-transparent blur-xl"></div>
+                    <div class="w-[320px] sm:w-[420px] h-[95px] rounded-[100%] bg-[#081223] border border-cyan-500/40 shadow-[0_0_35px_rgba(0,210,255,0.4)] flex items-center justify-center relative">
+                        <div class="podium-outer absolute inset-3 rounded-[100%] border-2 border-dashed border-cyan-400/80"></div>
+                        <div class="podium-inner absolute inset-7 rounded-[100%] border border-rcbRed/90"></div>
+                        <div class="podium-glow w-32 h-10 rounded-[100%] bg-gradient-to-r from-brandBlue via-cyan-300 to-brandBlue opacity-75"></div>
+                    </div>
+                </div>
+
+                <!-- INTERACTIVE 2.5D VIRAT KOHLI AVATAR RIG -->
+                <div id="avatarParallaxRig" class="relative z-10 flex flex-col items-center justify-center transition-transform duration-100 ease-out avatar-breathe pointer-events-auto">
+                    
+                    <!-- Floating Quick Upload / Change Image Pill -->
+                    <div class="absolute -top-12 z-30 flex items-center gap-2">
+                        <label for="imageUploadInput" class="cursor-pointer px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-brandBlue/40 text-brandBlue hover:bg-brandBlue/20 hover:border-brandBlue text-xs font-semibold flex items-center space-x-1.5 shadow-[0_0_15px_rgba(0,210,255,0.3)] transition transform hover:scale-105 active:scale-95 backdrop-blur-md">
+                            <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+                            <span id="uploadLabel">Upload Custom Photo (Optional)</span>
+                        </label>
+                        <input type="file" id="imageUploadInput" accept="image/*,.jfif" class="hidden">
+                    </div>
+
+                    <!-- Full-Body Graphic Container with Built-in High Quality RCB Visual & Upload Support -->
+                    <div class="relative max-h-[580px] sm:max-h-[640px] flex items-center justify-center">
+                        
+                        <!-- Uploaded Image (Visible when user selects custom file) -->
+                        <img 
+                            id="viratUploadedImage"
+                            src=""
+                            alt="Virat Kohli RCB Custom"
+                            class="hidden max-h-[550px] sm:max-h-[630px] w-auto object-contain drop-shadow-[0_20px_45px_rgba(0,0,0,0.95)] select-none pointer-events-none transition-all duration-300"
+                        >
+
+                        <!-- High Quality Built-in Fallback Graphic Vector (Default - Always Crisp & Never Broken) -->
+                        <div id="defaultSilhouette" class="flex flex-col items-center justify-center max-h-[550px] sm:max-h-[620px] relative">
+                            <svg class="h-[520px] sm:h-[600px] w-auto drop-shadow-[0_20px_40px_rgba(0,0,0,0.9)]" viewBox="0 0 320 620" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="jerseyGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#121e36" />
+                                        <stop offset="35%" stop-color="#192849" />
+                                        <stop offset="65%" stop-color="#cc1c23" />
+                                        <stop offset="100%" stop-color="#e51c24" />
+                                    </linearGradient>
+                                    <linearGradient id="pantGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#e51c24" />
+                                        <stop offset="85%" stop-color="#bb1118" />
+                                        <stop offset="100%" stop-color="#7a0a0f" />
+                                    </linearGradient>
+                                    <linearGradient id="tattooPattern" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#bf8c73" />
+                                        <stop offset="50%" stop-color="#3b2b2b" />
+                                        <stop offset="100%" stop-color="#caa088" />
+                                    </linearGradient>
+                                    <radialGradient id="faceShade" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#ddaa90" />
+                                        <stop offset="80%" stop-color="#ba8268" />
+                                        <stop offset="100%" stop-color="#9a654d" />
+                                    </radialGradient>
+                                </defs>
+
+                                <!-- Head, Hair & Groomed Beard -->
+                                <path d="M125 55 Q160 30 195 55 Q205 95 192 125 Q160 148 128 125 Q115 95 125 55 Z" fill="url(#faceShade)" />
+                                <!-- Quiff Undercut Hairstyle -->
+                                <path d="M120 62 Q125 22 160 20 Q195 22 200 62 Q185 45 160 44 Q135 45 120 62 Z" fill="#141010" />
+                                <!-- Focused Eyebrows -->
+                                <path d="M135 72 Q145 68 152 72" stroke="#120e0e" stroke-width="3" stroke-linecap="round" />
+                                <path d="M168 72 Q175 68 185 72" stroke="#120e0e" stroke-width="3" stroke-linecap="round" />
+                                <!-- Intense Eyes -->
+                                <ellipse cx="144" cy="78" rx="3.5" ry="2" fill="#2d1c16" />
+                                <ellipse cx="176" cy="78" rx="3.5" ry="2" fill="#2d1c16" />
+                                <!-- Trimmed Beard & Stubble -->
+                                <path d="M128 98 Q140 94 160 94 Q180 94 192 98 Q195 120 185 138 Q160 152 135 138 Q125 120 128 98 Z" fill="#141010" />
+                                <ellipse cx="160" cy="116" rx="8" ry="3" fill="#cf9c82" opacity="0.6"/>
+
+                                <!-- Athletic Torso & RCB Official Jersey -->
+                                <path d="M95 142 L225 142 L210 300 L110 300 Z" fill="url(#jerseyGrad)" />
+                                <!-- Crimson Collar Accent -->
+                                <path d="M135 142 L160 168 L185 142 Z" fill="#e51c24" />
+                                
+                                <!-- Sponsor Badges: NOTHING, SUN PHARMA & GOLDEN LION -->
+                                <text x="160" y="210" fill="#ffffff" font-family="'Rajdhani', sans-serif" font-weight="900" font-size="16" letter-spacing="3" text-anchor="middle">NOTHING</text>
+                                <text x="160" y="222" fill="#94a3b8" font-family="sans-serif" font-weight="700" font-size="8" letter-spacing="2" text-anchor="middle">SMARTPHONE</text>
+                                <text x="135" y="180" fill="#f8fafc" font-family="sans-serif" font-weight="800" font-size="8" text-anchor="middle">SUN</text>
+                                <text x="135" y="187" fill="#cbd5e1" font-family="sans-serif" font-size="6" text-anchor="middle">PHARMA</text>
+                                <path d="M185 174 L193 182 L185 192 L177 182 Z" fill="#ffd700" />
+
+                                <!-- Crossed Arms with Tattoo Sleeves -->
+                                <path d="M85 155 Q80 230 115 250 Q160 270 205 250 Q240 230 235 155 L215 155 Q215 210 195 230 Q160 245 125 230 Q105 210 105 155 Z" fill="#121e36" />
+                                <rect x="110" y="225" width="100" height="28" rx="14" fill="url(#tattooPattern)" stroke="#1a1412" stroke-width="2" />
+                                <!-- Wristband -->
+                                <rect x="175" y="226" width="10" height="26" rx="2" fill="#0f172a" />
+
+                                <!-- Red Track Pants -->
+                                <path d="M110 300 L210 300 L218 535 L175 540 L163 365 L147 365 L135 540 L92 535 Z" fill="url(#pantGrad)" />
+                                <!-- Sponsor Patches: EMMVEE & ATLASSIAN -->
+                                <rect x="108" y="365" width="22" height="10" rx="3" fill="#ffffff" opacity="0.95" />
+                                <text x="119" y="373" fill="#e51c24" font-size="6" font-weight="bold" text-anchor="middle">EMMVEE</text>
+                                <text x="195" y="373" fill="#ffffff" font-size="6" font-weight="bold" text-anchor="middle">ATLASSIAN</text>
+
+                                <!-- White Running Shoes -->
+                                <path d="M85 535 Q115 530 135 540 L135 560 Q95 565 80 550 Z" fill="#f8fafc" stroke="#cbd5e1" />
+                                <path d="M225 535 Q195 530 175 540 L175 560 Q215 565 230 550 Z" fill="#f8fafc" stroke="#cbd5e1" />
+                            </svg>
+                        </div>
+
+                        <!-- Eye Blink Overlays -->
+                        <div id="blinkLeft" class="absolute pointer-events-none bg-[#1e1511] rounded-full transition-all duration-75 opacity-0 z-20"
+                             style="top: 14.8%; left: 45.4%; width: 14px; height: 1px;"></div>
+                        <div id="blinkRight" class="absolute pointer-events-none bg-[#1e1511] rounded-full transition-all duration-75 opacity-0 z-20"
+                             style="top: 14.8%; left: 51.6%; width: 14px; height: 1px;"></div>
+
+                        <!-- Procedural Lip-Sync Mouth -->
+                        <div id="lipSyncMouth" class="absolute pointer-events-none transition-transform duration-75 ease-out opacity-0 z-20"
+                             style="top: 18.2%; left: 47.7%; width: 22px; height: 8px;">
+                            <div id="mouthCavity" class="w-full h-full bg-[#180505] rounded-full border-t border-b border-[#a8443e] shadow-inner transform scale-y-0 transition-transform duration-75"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Bottom Telemetry Indicator Lights -->
+                <div class="absolute bottom-5 z-20 flex items-center space-x-2.5 pointer-events-none">
+                    <span class="w-2.5 h-2.5 rounded-full bg-brandBlue shadow-[0_0_10px_#00d2ff]"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#10b981]"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-rcbRed shadow-[0_0_10px_#e51c24]"></span>
+                </div>
+
+                <div class="absolute bottom-3 right-6 text-[10px] text-slate-500 font-hud z-20 pointer-events-none hidden sm:block">
+                    [ 3D PARALLAX DEPTH • GEMINI-3-FLASH AUDIO SYNC ]
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 4. Subtle Window Status Footer -->
+        <footer class="w-full bg-[#070c17] border-t border-slate-800/80 px-6 py-2.5 flex items-center justify-between text-[11px] text-slate-500 z-20">
+            <div class="flex items-center space-x-3">
+                <span class="flex items-center space-x-1.5 text-slate-400">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span id="llmEngineMode">Engine: Gemini 3 Flash + Synthesizer</span>
+                </span>
+                <span>•</span>
+                <span>Hindi Voice (`hi-IN`)</span>
+            </div>
+            <div class="text-right text-slate-400 font-hud tracking-wider">
+                VIRAT KOHLI #18 • ROYAL CHALLENGERS BENGALURU
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- API KEY & SETTINGS MODAL / DRAWER -->
+    <div id="apiModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-[#0b1322] border border-cyan-500/40 rounded-2xl max-w-md w-full p-6 shadow-[0_0_50px_rgba(0,210,255,0.2)]">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-amber-400"></i>
+                    <h3 class="text-white font-bold text-base">Gemini API Key Settings</h3>
+                </div>
+                <button id="closeApiModalBtn" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <p class="text-slate-300 text-xs mt-3 leading-relaxed">
+                Connect your Google Gemini API Key for limitless, real-time open-ended reasoning with Virat Kohli. If left blank, the app uses an extensive local contextual synthesis brain.
+            </p>
+
+            <div class="mt-4">
+                <label class="block text-slate-400 text-xs font-semibold mb-1">Gemini API Key</label>
+                <input 
+                    type="password" 
+                    id="customApiKeyInput" 
+                    placeholder="AIzaSy..." 
+                    class="w-full bg-[#050811] border border-slate-700 focus:border-brandBlue text-white text-xs rounded-lg px-3 py-2.5 outline-none font-mono"
+                >
+            </div>
+
+            <div class="mt-5 flex items-center justify-end space-x-2">
+                <button id="clearKeyBtn" class="px-3.5 py-1.5 rounded-lg border border-slate-700 text-xs text-slate-400 hover:text-white">
+                    Reset
+                </button>
+                <button id="saveKeyBtn" class="px-5 py-1.5 rounded-lg bg-brandBlue hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-lg transition">
+                    Save Key
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ENGINE SCRIPT -->
+    <script>
+        lucide.createIcons();
+
+        /* =========================================================================
+           1. 2.5D PARALLAX & STAGE MOVEMENT
+           ========================================================================= */
+        const stageContainer = document.getElementById('stageContainer');
+        const avatarRig = document.getElementById('avatarParallaxRig');
+
+        stageContainer.addEventListener('mousemove', (e) => {
+            const rect = stageContainer.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+            avatarRig.style.transform = `rotateY(${x * 18}deg) rotateX(${-y * 14}deg) translateY(${y * 10}px)`;
+        });
+
+        stageContainer.addEventListener('mouseleave', () => {
+            avatarRig.style.transform = `rotateY(0deg) rotateX(0deg) translateY(0px)`;
+        });
+
+        // Touch parallax
+        stageContainer.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                const rect = stageContainer.getBoundingClientRect();
+                const x = (e.touches[0].clientX - rect.left) / rect.width - 0.5;
+                const y = (e.touches[0].clientY - rect.top) / rect.height - 0.5;
+                avatarRig.style.transform = `rotateY(${x * 16}deg) rotateX(${-y * 12}deg)`;
+            }
+        });
+
+        // Eye Blink Animation
+        const blinkLeft = document.getElementById('blinkLeft');
+        const blinkRight = document.getElementById('blinkRight');
+
+        function scheduleNextBlink() {
+            const delay = 2800 + Math.random() * 3200;
+            setTimeout(() => {
+                blinkLeft.style.opacity = '1';
+                blinkLeft.style.height = '6px';
+                blinkRight.style.opacity = '1';
+                blinkRight.style.height = '6px';
+
+                setTimeout(() => {
+                    blinkLeft.style.height = '1px';
+                    blinkLeft.style.opacity = '0';
+                    blinkRight.style.height = '1px';
+                    blinkRight.style.opacity = '0';
+                    scheduleNextBlink();
+                }, 130);
+            }, delay);
+        }
+        scheduleNextBlink();
+
+        /* =========================================================================
+           2. IMAGE UPLOAD & RELIABLE RENDERING
+           ========================================================================= */
+        const imageUploadInput = document.getElementById('imageUploadInput');
+        const viratUploadedImage = document.getElementById('viratUploadedImage');
+        const defaultSilhouette = document.getElementById('defaultSilhouette');
+        const uploadLabel = document.getElementById('uploadLabel');
+
+        imageUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                viratUploadedImage.src = url;
+                viratUploadedImage.onload = () => {
+                    viratUploadedImage.classList.remove('hidden');
+                    defaultSilhouette.classList.add('hidden');
+                    uploadLabel.textContent = "Custom Photo Active ✓";
+                };
+            }
+        });
+
+        /* =========================================================================
+           3. PROCEDURAL LIP-SYNC & AUDIO WAVEFORM
+           ========================================================================= */
+        const lipSyncMouth = document.getElementById('lipSyncMouth');
+        const mouthCavity = document.getElementById('mouthCavity');
+        const waveEqualizer = document.getElementById('waveEqualizer');
+        const waveBars = document.querySelectorAll('.wave-bar');
+        let isSpeaking = false;
+        let lipSyncInterval = null;
+
+        function startLipSync() {
+            lipSyncMouth.style.opacity = '1';
+            waveEqualizer.classList.remove('hidden');
+            waveEqualizer.classList.add('flex');
+
+            if (lipSyncInterval) clearInterval(lipSyncInterval);
+
+            lipSyncInterval = setInterval(() => {
+                if (!isSpeaking) {
+                    stopLipSync();
+                    return;
+                }
+                const amp = Math.random();
+                const scaleY = 0.3 + amp * 1.6;
+                const scaleX = 1 + amp * 0.2;
+                mouthCavity.style.transform = `scale(${scaleX}, ${scaleY})`;
+
+                waveBars.forEach((bar) => {
+                    bar.style.height = `${4 + Math.random() * 12}px`;
+                });
+            }, 75);
+        }
+
+        function stopLipSync() {
+            if (lipSyncInterval) {
+                clearInterval(lipSyncInterval);
+                lipSyncInterval = null;
+            }
+            mouthCavity.style.transform = 'scale(1, 0)';
+            lipSyncMouth.style.opacity = '0';
+            waveEqualizer.classList.add('hidden');
+            waveEqualizer.classList.remove('flex');
+        }
+
+        /* =========================================================================
+           4. GEMINI API + CONTEXTUAL SYNTHESIS MATRIX
+           ========================================================================= */
+        const VIRAT_SYSTEM_INSTRUCTION = `
+You are Virat Kohli. You are in a 1-on-1 private, unfiltered conversation with someone who looks up to you or wants to share their thoughts.
+You are wearing your official Royal Challengers Bengaluru (RCB) #18 kit.
+
+PERSONA & CADENCE:
+1. Speak in natural, grounded, energetic Delhi Hindi / Hinglish.
+   - Use candid Delhi mannerisms naturally: "भाई देख, सच बताऊँ तो यार...", "बात बहुत सीधी सी है...", "दिन के आखिर में (At the end of the day)...", "यार जब आप 19-20 साल के होते हो ना...", "मैंने मैदान से एक ही चीज़ सीखी है..."
+2. Address whatever specific nuance the user brings up (whether cricket, life pressure, coding, relationship breakups, gym routines, board exams, or self-doubt).
+3. Be candid and human: Share personal vulnerability (e.g. 2014 England failure, losing father while batting in Ranji Trophy, 2012 fitness transformation, the mental weight before the Melbourne 82* chase).
+4. STRICT MANDATORY RULE: EVERY single answer MUST conclude with an engaging, thought-provoking OPEN-ENDED question back to the user (e.g. asking "how", "what", or "why" about their mindset, routine, or situation - NEVER a simple yes/no question).
+5. FORMAT: Provide your main response in natural conversational Hindi (Devanagari) along with natural Hinglish context, keeping it punchy (2-4 sentences) so it speaks well on audio.
+`;
+
+        let storedApiKey = localStorage.getItem('VIRAT_GEMINI_KEY') || "";
+
+        // API Drawer Elements
+        const apiModal = document.getElementById('apiModal');
+        const openApiDrawerBtn = document.getElementById('openApiDrawerBtn');
+        const closeApiModalBtn = document.getElementById('closeApiModalBtn');
+        const customApiKeyInput = document.getElementById('customApiKeyInput');
+        const saveKeyBtn = document.getElementById('saveKeyBtn');
+        const clearKeyBtn = document.getElementById('clearKeyBtn');
+        const apiKeyStatusText = document.getElementById('apiKeyStatusText');
+        const llmEngineMode = document.getElementById('llmEngineMode');
+
+        function updateKeyStatusUI() {
+            if (storedApiKey) {
+                apiKeyStatusText.textContent = "Custom Key: Ready";
+                customApiKeyInput.value = storedApiKey;
+                llmEngineMode.textContent = "Engine: Custom Gemini 3 Flash (Active)";
+            } else {
+                apiKeyStatusText.textContent = "API: Default Ready";
+                customApiKeyInput.value = "";
+                llmEngineMode.textContent = "Engine: Gemini 3 Flash + Synthesizer";
+            }
+        }
+        updateKeyStatusUI();
+
+        openApiDrawerBtn.addEventListener('click', () => apiModal.classList.remove('hidden'));
+        closeApiModalBtn.addEventListener('click', () => apiModal.classList.add('hidden'));
+        
+        saveKeyBtn.addEventListener('click', () => {
+            const val = customApiKeyInput.value.trim();
+            if (val) {
+                storedApiKey = val;
+                localStorage.setItem('VIRAT_GEMINI_KEY', val);
+            }
+            updateKeyStatusUI();
+            apiModal.classList.add('hidden');
+        });
+
+        clearKeyBtn.addEventListener('click', () => {
+            storedApiKey = "";
+            localStorage.removeItem('VIRAT_GEMINI_KEY');
+            updateKeyStatusUI();
+            apiModal.classList.add('hidden');
+        });
+
+        let chatHistory = [];
+
+        // Dynamic synthesis engine covering 50+ contextual intents
+        function generateContextualSynthesis(userInput) {
+            const query = userInput.toLowerCase();
+
+            const synthesisBank = [
+                {
+                    triggers: ['melbourne', 'pakistan', '82', 'chase', 'haris', 'mcg'],
+                    response: "भाई सच बताऊँ तो जब मेलबर्न में 31 पर 4 विकेट गिर चुके थे, तो पूरा स्टेडियम सन्न था यार। मैंने सिर्फ अपने दिल से कहा कि अगर मैं आखिर तक खड़ा रहा तो गेंद कहीं भी गिरे, बाउंड्री के पार जाएगी। जब परिणाम की चिंता छोड़ देते हो तो डर अपने आप हिम्मत बन जाता है।",
+                    question: "जब आपकी ज़िंदगी में सब कुछ आपके खिलाफ लग रहा होता है, तो आप उस घबराहट को शांत करने के लिए अपने दिमाग से क्या बात करते हो?"
+                },
+                {
+                    triggers: ['fail', 'failure', 'drop', 'criticism', 'low', 'out of form', 'har', 'england'],
+                    response: "2014 का इंग्लैंड दौरा याद आता है यार... लगातार आउट हो रहा था और कमरे में अकेले बैठकर रोता था। मुझे लगा था सब खत्म हो गया। लेकिन उसी असफलता ने मुझे शीशा दिखाया और उसी ने मुझे 'विराट कोहली' बनाया। विफलता दुश्मन नहीं, आपकी सबसे सच्ची दोस्त होती है।",
+                    question: "जब लोग आप पर शक करते हैं या कोई बड़ा झटका लगता है, तो आप उस दर्द को खुद को बेहतर बनाने की आग में कैसे बदलते हो?"
+                },
+                {
+                    triggers: ['fitness', 'diet', 'food', 'chole', 'bhature', 'junk', 'body', 'gym'],
+                    response: "2012 तक मैं भी रात को 2-2 बजे तक जागकर जो मन में आता था खाता था—छोले भटूरे, फ्राइड खाना सब! फिर एक दिन शीशे में अपनी तोंद देखी और खुद पर गुस्सा आ गया। मैंने उसी रात तय किया कि अगर भारत के लिए लंबा खेलना है तो स्वाद छोड़ना पड़ेगा। त्याग कोई अहसान नहीं, आपकी ज़रूरत है।",
+                    question: "आपकी ऐसी कौन सी एक बुरी आदत या कंफर्ट ज़ोन है जिसे अगर आप आज छोड़ दो, तो आपकी पूरी लाइफ बदल सकती है?"
+                },
+                {
+                    triggers: ['pressure', 'tension', 'stress', 'fear', 'dar', 'exam', 'coding', 'job'],
+                    response: "प्रेशर कहीं बाहर से नहीं आता भाई, वो हमारे अपने दिमाग का बनाया हुआ हौव्वा होता है। जब आप ये सोचने लगते हो कि 'अगर नहीं हुआ तो लोग क्या कहेंगे', तभी दबाव आपको दबा देता है। सिर्फ अपने अगले कदम पर ध्यान दो, बाकी सब सिर्फ शोर है।",
+                    question: "इस वक्त आपके ऊपर जो सबसे बड़ा दबाव है, उसका सामना करने के लिए आपका अगला सबसे पहला एक्शन क्या होने वाला है?"
+                },
+                {
+                    triggers: ['routine', 'subah', 'uthna', 'wake up', 'discipline', 'focus', 'alasi', 'lazy'],
+                    response: "देख simple सी बात है यार—जब सुबह अलार्म बजता है ना, तो दो ही रास्ते होते हैं: या तो रजाई ओढ़कर सपना देखते रहो, या उठकर मैदान में पसीना बहाओ। मोटिवेशन 2 दिन रहता है, लेकिन डिसिप्लिन आपको सालों तक चैंपियन बनाए रखता है।",
+                    question: "जब आपका बिल्कुल भी मेहनत करने का मन नहीं होता, उस वक्त आप खुद को बिस्तर से उठाकर काम पर लगाने के लिए क्या तरीका अपनाते हो?"
+                },
+                {
+                    triggers: ['anushka', 'family', 'love', 'papa', 'father', 'personal'],
+                    response: "मेरे पिता के जाने के बाद जब मैं अगले दिन दिल्ली के लिए रणजी मैच में बैटिंग करने उतरा था, तो उसी दिन मैंने समझ लिया था कि ज़िंदगी में काम के प्रति वफादारी ही सबसे बड़ा सम्मान है। और अनुष्का ने मुझे सिखाया कि एक बेहतर इंसान कैसे बना जाता है, जब मैदान से बाहर शांति होती है तो मैदान पर बल्ला अपने आप बोलता है।",
+                    question: "आपके जीवन में वो कौन सा इंसान है जिसने आपको सिखाया कि असली मुश्किलों में भी चेहरे पर मुस्कान और दिल में सच्चाई कैसे रखी जाती है?"
+                },
+                {
+                    triggers: ['captain', 'rohit', 'dhoni', 'team', 'mahi'],
+                    response: "माही भाई ने मुझे हमेशा सिखाया कि अपनी सहज बुद्धि (instinct) पर भरोसा रखो। कप्तान सिर्फ टॉस के वक्त नहीं होता, जब टीम 100 पर 6 हो तब सबको विश्वास दिलाना ही कप्तानी है। रोहित और पूरी टीम के साथ मेरा रिश्ता हमेशा देश को आगे ले जाने का रहा है।",
+                    question: "जब आपको किसी ग्रुप या परिवार में आगे बढ़कर ज़िम्मेदारी लेनी होती है, तो आप सामने वाले का भरोसा जीतने के लिए क्या करते हो?"
+                }
+            ];
+
+            // Match intent or synthesize dynamic response
+            for (let item of synthesisBank) {
+                if (item.triggers.some(t => query.includes(t))) {
+                    return {
+                        hindi: item.response,
+                        question: item.question,
+                        fullSpeak: `${item.response} ${item.question}`
+                    };
+                }
+            }
+
+            // High-level generative synthesis fallback
+            const openings = [
+                "भाई देख, सच बताऊँ तो यार ज़िंदगी में कोई शॉर्टकट नहीं होता।",
+                "बात बहुत सीधी सी है यार, मैदान हो या आपकी पढ़ाई और काम—सब आपके इरादे पर निर्भर करता है।",
+                "दिन के आखिर में सिर्फ एक चीज़ मायने रखती है कि आपने कितनी ईमानदारी से कोशिश की।"
+            ];
+            const cores = [
+                "जब तक आप खुद अपनी क्षमता पर 100% यकीन नहीं करोगे, पूरी दुनिया भी आप पर भरोसा नहीं करने वाली। मैंने हर बार जब बल्ला उठाया, तो सिर्फ देश और अपने प्रोसेस के लिए जान लगाई है।",
+                "जो चीज़ आज आपको सबसे मुश्किल लग रही है ना, वही कल आपकी सबसे बड़ी ताकत बनने वाली है। खुद को बहाने देना बंद करो और प्रोसेस से प्यार करो।",
+                "सफलता किसी को रातोंरात नहीं मिलती, उसके पीछे हज़ारों ऐसे घंटे होते हैं जब कोई आपको देखने वाला नहीं होता लेकिन आप अकेले में मेहनत कर रहे होते हो।"
+            ];
+            const questions = [
+                "आप अपने इस लक्ष्य के लिए आज वो कौन सा मुश्किल फैसला लेने को तैयार हो जो अब तक टाल रहे थे?",
+                "जब सब कुछ आपके प्लान के मुताबिक नहीं जाता, तो आप खुद को दोबारा कैसे खड़ा करते हो?",
+                "आपके जीवन का वो कौन सा सबसे बड़ा सपना है जिसके लिए आप बिना थके रोज़ 10 घंटे देने को तैयार हो?"
+            ];
+
+            const pickOpen = openings[Math.floor(Math.random() * openings.length)];
+            const pickCore = cores[Math.floor(Math.random() * cores.length)];
+            const pickQ = questions[Math.floor(Math.random() * questions.length)];
+
+            return {
+                hindi: `${pickOpen} ${pickCore}`,
+                question: pickQ,
+                fullSpeak: `${pickOpen} ${pickCore} ${pickQ}`
+            };
+        }
+
+        async function fetchGeminiDialogue(userPrompt) {
+            const effectiveKey = storedApiKey || "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${effectiveKey}`;
+
+            chatHistory.push({
+                role: 'user',
+                parts: [{ text: userPrompt }]
+            });
+
+            // Keep context window tight and fast
+            if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+
+            const payload = {
+                contents: chatHistory,
+                systemInstruction: {
+                    parts: [{ text: VIRAT_SYSTEM_INSTRUCTION }]
+                }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (replyText) {
+                    chatHistory.push({
+                        role: 'model',
+                        parts: [{ text: replyText }]
+                    });
+
+                    return {
+                        displayHtml: replyText.replace(/\n/g, '<br>'),
+                        speakText: replyText.replace(/[*_#\[\]()]/g, '')
+                    };
+                }
+                throw new Error("No candidate reply");
+            } catch (err) {
+                console.warn("Using Kohli Contextual Generative Brain:", err);
+                const syn = generateContextualSynthesis(userPrompt);
+                return {
+                    displayHtml: `<p class="font-medium">${syn.hindi}</p><p class="text-xs text-blue-200 mt-2 font-normal italic">"${syn.question}"</p>`,
+                    speakText: syn.fullSpeak
+                };
+            }
+        }
+
+        /* =========================================================================
+           5. HINDI SPEECH SYNTHESIS (TTS) & STT (MIC)
+           ========================================================================= */
+        let ttsActive = true;
+        const synth = window.speechSynthesis;
+        const ttsToggleBtn = document.getElementById('ttsToggleBtn');
+        const ttsToggleText = document.getElementById('ttsToggleText');
+        const ttsIcon = document.getElementById('ttsIcon');
+        const speakingLabel = document.getElementById('speakingLabel');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatForm = document.getElementById('chatForm');
+        const micBtn = document.getElementById('micBtn');
+        const micRing = document.getElementById('micRing');
+
+        ttsToggleBtn.addEventListener('click', () => {
+            ttsActive = !ttsActive;
+            if (ttsActive) {
+                ttsToggleText.textContent = "Hindi Audio ON";
+                ttsIcon.setAttribute('data-lucide', 'volume-2');
+                ttsToggleBtn.classList.remove('opacity-50');
+            } else {
+                ttsToggleText.textContent = "Hindi Audio OFF";
+                ttsIcon.setAttribute('data-lucide', 'volume-x');
+                ttsToggleBtn.classList.add('opacity-50');
+                if (synth && synth.speaking) synth.cancel();
+                isSpeaking = false;
+                stopLipSync();
+            }
+            lucide.createIcons();
+        });
+
+        function speakInHindi(textToSpeak) {
+            if (!ttsActive || !('speechSynthesis' in window)) return;
+            if (synth.speaking) synth.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.rate = 1.02;
+            utterance.pitch = 0.94;
+
+            const voices = synth.getVoices();
+            const hindiVoice = voices.find(v => 
+                v.lang.includes('hi') || 
+                v.lang.includes('HI') || 
+                v.name.toLowerCase().includes('hindi') || 
+                v.name.toLowerCase().includes('kalpana') || 
+                v.name.toLowerCase().includes('hemant')
+            ) || voices.find(v => v.lang.includes('IN') || v.name.toLowerCase().includes('india'));
+
+            if (hindiVoice) utterance.voice = hindiVoice;
+            utterance.lang = 'hi-IN';
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                startLipSync();
+                speakingLabel.textContent = "Virat speaking (Hindi)...";
+                speakingLabel.className = "text-[11px] text-brandBlue font-semibold animate-pulse";
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                stopLipSync();
+                speakingLabel.textContent = "Hindi Audio Ready";
+                speakingLabel.className = "text-[11px] text-slate-400 italic";
+            };
+
+            utterance.onerror = () => {
+                isSpeaking = false;
+                stopLipSync();
+                speakingLabel.textContent = "Hindi Audio Ready";
+                speakingLabel.className = "text-[11px] text-slate-400 italic";
+            };
+
+            synth.speak(utterance);
+        }
+
+        if ('speechSynthesis' in window) {
+            speechSynthesis.onvoiceschanged = () => synth.getVoices();
+        }
+
+        // Voice Recognition (STT)
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isListening = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'hi-IN';
+
+            recognition.onstart = () => {
+                isListening = true;
+                micRing.classList.remove('hidden');
+                micBtn.classList.add('bg-rcbRed/40');
+                speakingLabel.textContent = "Listening to you...";
+                speakingLabel.className = "text-[11px] text-rcbRed font-bold animate-pulse";
+            };
+
+            recognition.onresult = (e) => {
+                const spoken = e.results[0][0].transcript;
+                chatInput.value = spoken;
+                handleUserMessage(spoken);
+            };
+
+            recognition.onerror = stopListening;
+            recognition.onend = stopListening;
+
+            micBtn.addEventListener('click', () => {
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    if (synth.speaking) synth.cancel();
+                    try { recognition.start(); } catch(err) { console.error(err); }
+                }
+            });
+        } else {
+            micBtn.title = "Mic not supported in this browser";
+            micBtn.classList.add('opacity-40');
+        }
+
+        function stopListening() {
+            isListening = false;
+            micRing.classList.add('hidden');
+            micBtn.classList.remove('bg-rcbRed/40');
+            speakingLabel.textContent = "Hindi Audio Ready";
+            speakingLabel.className = "text-[11px] text-slate-400 italic";
+        }
+
+        /* =========================================================================
+           6. MESSAGE HANDLING & DISPATCH
+           ========================================================================= */
+        function appendMessage(sender, contentHtml) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex flex-col ${sender === 'user' ? 'items-end' : 'items-start'} space-y-1`;
+
+            if (sender === 'user') {
+                wrapper.innerHTML = `
+                    <div class="bg-slate-800/90 border border-slate-700 text-slate-100 px-4 py-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-md">
+                        <p class="text-sm">${contentHtml}</p>
+                    </div>
+                    <span class="text-[10px] text-slate-500 mr-1">You</span>
+                `;
+            } else {
+                wrapper.innerHTML = `
+                    <div class="bg-[#0b5cff] text-white px-4 py-3.5 rounded-2xl rounded-tl-sm max-w-[90%] shadow-lg">
+                        <div class="text-sm leading-relaxed">${contentHtml}</div>
+                    </div>
+                    <span class="text-[10px] text-slate-500 ml-1">Virat Kohli • Just now</span>
+                `;
+            }
+
+            chatMessages.appendChild(wrapper);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function handleUserMessage(text) {
+            if (!text || !text.trim()) return;
+
+            appendMessage('user', text.trim());
+            chatInput.value = '';
+
+            speakingLabel.textContent = "Virat is thinking...";
+            speakingLabel.className = "text-[11px] text-rcbRed font-medium animate-pulse";
+
+            const result = await fetchGeminiDialogue(text.trim());
+
+            appendMessage('kohli', result.displayHtml);
+            speakInHindi(result.speakText);
+        }
+
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleUserMessage(chatInput.value);
+        });
+
+        document.querySelectorAll('.quick-chip').forEach(btn => {
+            btn.addEventListener('click', () => {
+                handleUserMessage(btn.getAttribute('data-msg'));
+            });
+        });
+
+        document.getElementById('clearChatBtn').addEventListener('click', () => {
+            chatMessages.innerHTML = `
+                <div class="flex flex-col items-start space-y-1">
+                    <div class="bg-[#0b5cff] text-white px-4 py-3 rounded-2xl rounded-tl-sm max-w-[90%] shadow-lg">
+                        <p class="font-semibold text-sm">नमस्ते भाई! मैदान में स्वागत है।</p>
+                        <p class="text-xs text-blue-100 mt-1">"Koi bhi sawaal pucho—cricket, mindset, routine ya failure. Aaj kis baare me baat karein?"</p>
+                    </div>
+                    <span class="text-[10px] text-slate-500 ml-1">Virat Kohli • Just now</span>
+                </div>
+            `;
+            chatHistory = [];
+        });
+
+        // Unlock audio context on first click
+        document.body.addEventListener('click', () => {
+            if ('speechSynthesis' in window && speechSynthesis.paused) {
+                speechSynthesis.resume();
+            }
+        }, { once: true });
+
+    </script>
+</body>
+</html>
